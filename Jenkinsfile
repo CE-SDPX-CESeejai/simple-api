@@ -30,7 +30,6 @@ pipeline {
                 script {
                     echo 'Running Unit Tests...'
                     sh '''
-            cd simple-api
             python3 -m unittest discover test
             '''
                 }
