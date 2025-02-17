@@ -10,20 +10,17 @@ pipeline {
     }
 
     stages {
-        stage('Clone simple-api Repository') {
+        stage('Verify Repository Checkout') {
             steps {
                 script {
-                    echo "Cloning simple-api repository..."
-                    withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                        sh '''
-                        rm -rf simple-api
-                        git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api.git
-                        if [ ! -d "simple-api" ]; then
-                            echo "ERROR: Cloning failed, directory does not exist!"
-                            exit 1
-                        fi
-                        '''
-                    }
+                    echo "Checking if repository was checked out correctly..."
+                    sh '''
+                    ls -la
+                    if [ ! -f "app.py" ]; then
+                        echo "ERROR: Expected files not found in workspace!"
+                        exit 1
+                    fi
+                    '''
                 }
             }
         }
@@ -34,11 +31,6 @@ pipeline {
                 script {
                     echo "Running unit tests..."
                     sh '''
-                    if [ ! -d "simple-api" ]; then
-                        echo "ERROR: simple-api directory not found!"
-                        exit 1
-                    fi
-                    cd simple-api
                     python3 -m unittest discover test
                     '''
                 }
@@ -53,7 +45,7 @@ pipeline {
                     sh 'docker --version || (echo "Docker not found! Installing..." && sudo apt update && sudo apt install -y docker.io)'
 
                     echo "Building Docker image..."
-                    sh 'docker build -t $GHCR_IMAGE simple-api'
+                    sh 'docker build -t $GHCR_IMAGE .'
                 }
             }
         }
