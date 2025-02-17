@@ -30,8 +30,8 @@ pipeline {
                 script {
                     echo 'Running Unit Tests...'
                     sh '''
-            python3 -m unittest discover test
-            '''
+                    python3 -m unittest discover test
+                    '''
                 }
             }
         }

@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/getcode', methods=['GET'])
 def get_code():
-    return jsonify({"code": "12345"})
+    return jsonify({"code": "45678"})
 
 
 @app.route('/plus/<a>/<b>', methods=['GET'])
