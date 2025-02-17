@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GHCR_IMAGE = "ghcr.io/CE-SDPX-CESeejai/simple-api:latest"
+        GHCR_IMAGE = "ghcr.io/ce-sdpx-ceseejai/simple-api:latest"
         REPO_URL = "https://github.com/CE-SDPX-CESeejai/simple-api.git"
         ROBOT_REPO_URL = "https://github.com/CE-SDPX-CESeejai/simple-api-robot.git"
         GHCR_USERNAME = "ce-sdpx-ceseejai"
