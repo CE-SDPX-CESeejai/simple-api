@@ -15,8 +15,14 @@ pipeline {
                 script {
                     echo "Cloning simple-api repository..."
                     withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                        sh 'rm -rf simple-api'
-                        sh 'git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api.git'
+                        sh '''
+                        rm -rf simple-api
+                        git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api.git
+                        if [ ! -d "simple-api" ]; then
+                            echo "ERROR: Cloning failed, directory does not exist!"
+                            exit 1
+                        fi
+                        '''
                     }
                 }
             }
@@ -27,7 +33,14 @@ pipeline {
             steps {
                 script {
                     echo "Running unit tests..."
-                    sh 'cd simple-api && python3 -m unittest discover test'
+                    sh '''
+                    if [ ! -d "simple-api" ]; then
+                        echo "ERROR: simple-api directory not found!"
+                        exit 1
+                    fi
+                    cd simple-api
+                    python3 -m unittest discover test
+                    '''
                 }
             }
         }
@@ -66,8 +79,14 @@ pipeline {
                 script {
                     echo "Cloning simple-api-robot repository..."
                     withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
-                        sh 'rm -rf simple-api-robot'
-                        sh 'git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api-robot.git'
+                        sh '''
+                        rm -rf simple-api-robot
+                        git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api-robot.git
+                        if [ ! -d "simple-api-robot" ]; then
+                            echo "ERROR: Cloning failed, directory does not exist!"
+                            exit 1
+                        fi
+                        '''
                     }
                 }
             }
@@ -78,7 +97,13 @@ pipeline {
             steps {
                 script {
                     echo "Running Robot Framework tests..."
-                    sh 'robot simple-api-robot/tests'
+                    sh '''
+                    if [ ! -d "simple-api-robot" ]; then
+                        echo "ERROR: simple-api-robot directory not found!"
+                        exit 1
+                    fi
+                    robot simple-api-robot/tests
+                    '''
                 }
             }
         }
