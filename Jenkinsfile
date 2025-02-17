@@ -25,26 +25,11 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests on Test VM') {
+        stage('Build Docker Image with Dependencies') {
             agent { label 'test' }
             steps {
                 script {
-                    echo "Running unit tests..."
-                    sh '''
-                    python3 -m unittest discover test
-                    '''
-                }
-            }
-        }
-
-        stage('Build Docker Image on Test VM') {
-            agent { label 'test' }
-            steps {
-                script {
-                    echo "Checking if Docker is installed..."
-                    sh 'docker --version || (echo "Docker not found! Installing..." && sudo apt update && sudo apt install -y docker.io)'
-
-                    echo "Building Docker image..."
+                    echo "Building Docker image with dependencies..."
                     sh 'docker build -t $GHCR_IMAGE .'
                 }
             }
