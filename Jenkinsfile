@@ -14,8 +14,10 @@ pipeline {
             steps {
                 script {
                     echo "Cloning simple-api repository..."
-                    sh 'rm -rf simple-api'
-                    sh 'git clone $REPO_URL'
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
+                        sh 'rm -rf simple-api'
+                        sh 'git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api.git'
+                    }
                 }
             }
         }
@@ -25,7 +27,7 @@ pipeline {
             steps {
                 script {
                     echo "Running unit tests..."
-                    sh 'cd simple-api && python -m unittest discover test'
+                    sh 'cd simple-api && python3 -m unittest discover test'
                 }
             }
         }
@@ -34,6 +36,9 @@ pipeline {
             agent { label 'test' }
             steps {
                 script {
+                    echo "Checking if Docker is installed..."
+                    sh 'docker --version || (echo "Docker not found! Installing..." && sudo apt update && sudo apt install -y docker.io)'
+
                     echo "Building Docker image..."
                     sh 'docker build -t $GHCR_IMAGE simple-api'
                 }
@@ -44,6 +49,10 @@ pipeline {
             agent { label 'test' }
             steps {
                 script {
+                    echo "Stopping any existing container..."
+                    sh 'docker stop simple-api-test || true'
+                    sh 'docker rm simple-api-test || true'
+
                     echo "Running container on test environment..."
                     sh 'docker run -d --name simple-api-test -p 5000:5000 $GHCR_IMAGE'
                     sleep(5)
@@ -56,8 +65,10 @@ pipeline {
             steps {
                 script {
                     echo "Cloning simple-api-robot repository..."
-                    sh 'rm -rf simple-api-robot'
-                    sh 'git clone $ROBOT_REPO_URL'
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB_CREDENTIALS', usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PAT')]) {
+                        sh 'rm -rf simple-api-robot'
+                        sh 'git clone https://${GITHUB_USERNAME}:${GITHUB_PAT}@github.com/CE-SDPX-CESeejai/simple-api-robot.git'
+                    }
                 }
             }
         }
