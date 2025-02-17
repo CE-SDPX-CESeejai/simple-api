@@ -5,7 +5,7 @@ pipeline {
         GHCR_IMAGE = "ghcr.io/CE-SDPX-CESeejai/simple-api:latest"
         REPO_URL = "https://github.com/CE-SDPX-CESeejai/simple-api.git"
         ROBOT_REPO_URL = "https://github.com/CE-SDPX-CESeejai/simple-api-robot.git"
-        GHCR_USERNAME = "CE-SDPX-CESeejai"
+        GHCR_USERNAME = "ce-sdpx-ceseejai"
         GHCR_TOKEN = credentials('GHCR_PAT') 
     }
 
