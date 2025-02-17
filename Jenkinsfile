@@ -107,6 +107,9 @@ pipeline {
             agent { label 'preprod' }
             steps {
                 script {
+                    echo 'Logging into GitHub Container Registry...'
+                    sh 'echo $GHCR_TOKEN | docker login ghcr.io -u $GHCR_USERNAME --password-stdin'
+
                     echo 'Pulling image from GitHub Container Registry...'
                     sh 'docker pull $GHCR_IMAGE'
 
