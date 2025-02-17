@@ -25,13 +25,36 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            agent { label 'test' }
+            steps {
+                script {
+                    echo "Installing Python dependencies..."
+                    sh '''
+                    if ! command -v python3 &> /dev/null; then
+                        echo "Python3 not found! Installing..."
+                        sudo apt update && sudo apt install -y python3 python3-pip python3-venv
+                    fi
+
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    deactivate
+                    '''
+                }
+            }
+        }
+
         stage('Run Unit Tests on Test VM') {
             agent { label 'test' }
             steps {
                 script {
                     echo "Running unit tests..."
                     sh '''
+                    source venv/bin/activate
                     python3 -m unittest discover test
+                    deactivate
                     '''
                 }
             }
