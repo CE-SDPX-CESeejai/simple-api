@@ -24,6 +24,18 @@ pipeline {
                 }
             }
         }
+        stage('Run Unit Test in VM Testing') {
+            agent { label 'test' }
+            steps {
+                script {
+                    echo 'Running Unit Tests...'
+                    sh '''
+            cd simple-api
+            python3 -m unittest discover test
+            '''
+                }
+            }
+        }
 
         stage('Build Docker Image with Dependencies') {
             agent { label 'test' }
