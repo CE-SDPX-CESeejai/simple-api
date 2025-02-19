@@ -7,6 +7,7 @@ def get_code():
     return jsonify({"code": "Hello"})
 
 
+
 @app.route('/plus/<a>/<b>', methods=['GET'])
 def plus(a, b):
     try:
